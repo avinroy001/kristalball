@@ -15,3 +15,17 @@ const assetSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Asset", assetSchema);
+
+// backend/models/Movement.js
+// const mongoose = require("mongoose");
+
+const movementSchema = new mongoose.Schema({
+  assetId: { type: mongoose.Schema.Types.ObjectId, ref: "Asset" },
+  type: { type: String, enum: ["purchase", "transfer", "assignment"] },
+  from: String,
+  to: String,
+  quantity: Number,
+  date: { type: Date, default: Date.now },
+});
+
+module.exports = mongoose.model("Movement", movementSchema);

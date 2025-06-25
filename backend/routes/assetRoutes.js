@@ -9,9 +9,10 @@ router.post("/", async (req, res) => {
   res.status(201).json(asset);
 });
 
-// Get all assets
+// Get all assets with optional filters
 router.get("/", async (req, res) => {
-  const assets = await Asset.find();
+  const filters = req.query;
+  const assets = await Asset.find(filters);
   res.json(assets);
 });
 

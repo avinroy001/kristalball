@@ -8,12 +8,16 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const { data } = await axios.post("http://localhost:3001/api/auth/login", {
-      username,
-      password,
-    });
-    localStorage.setItem("token", data.token);
-    navigate("/dashboard");
+    try {
+      const { data } = await axios.post("http://localhost:3001/api/auth/login", {
+        username,
+        password,
+      });
+      localStorage.setItem("token", data.token);
+      navigate("/dashboard");
+    } catch (err) {
+      alert("Login failed");
+    }
   };
 
   return (
