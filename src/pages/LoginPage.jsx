@@ -9,7 +9,7 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const { data } = await axios.post("http://localhost:3001/api/auth/login", {
+      const { data } = await axios.post("https://kristalball.onrender.com/api/auth/login", {
         username,
         password,
       });
@@ -30,6 +30,7 @@ function LoginPage() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
+       <button onClick={() => navigate("/register")}>Register Now</button>
     </div>
   );
 }

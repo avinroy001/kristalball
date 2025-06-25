@@ -8,13 +8,13 @@ function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3001/api/assets", {
+      .get("https://kristalball.onrender.com/api/assets", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setAssets(res.data));
 
     axios
-      .get("http://localhost:3001/api/movements", {
+      .get("https://kristalball.onrender.com/api/movements", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setMovements(res.data));
