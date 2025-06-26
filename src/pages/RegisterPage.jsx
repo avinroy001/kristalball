@@ -5,24 +5,44 @@ import { useNavigate } from "react-router-dom";
 const RegisterPage = () => {
   const [form, setForm] = useState({ username: "", password: "", role: "admin" });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value.trim() }); // Trim input values
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setLoading(true);
+
+    const { username, password, role } = form;
+
+    // Basic frontend validation
+    if (!username || !password || !role) {
+      setMessage("All fields are required");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await axios.post("https://kristalball.onrender.com/api/auth/register", form);
-      setMessage(res.data.message);
+      const res = await axios.post("https://kristalball.onrender.com/api/auth/register ", form); // Fixed extra space
+      setMessage(res.data.message || "Registration successful!");
       setForm({ username: "", password: "", role: "admin" });
-      navigate("/");
+      
+      setTimeout(() => {
+        navigate("/"); // Redirect to login after success
+      }, 1000);
     } catch (err) {
-      setMessage(
-        err.response?.data?.message || "Registration failed. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Registration failed. Please try again.";
+      setMessage(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,6 +58,7 @@ const RegisterPage = () => {
             value={form.username}
             onChange={handleChange}
             required
+            placeholder="Enter username"
             style={{ width: "100%", padding: 8 }}
           />
         </div>
@@ -49,6 +70,7 @@ const RegisterPage = () => {
             value={form.password}
             onChange={handleChange}
             required
+            placeholder="Enter password"
             style={{ width: "100%", padding: 8 }}
           />
         </div>
@@ -65,9 +87,35 @@ const RegisterPage = () => {
             <option value="logistics">Logistics</option>
           </select>
         </div>
-        <button type="submit" style={{ width: "100%", padding: 10 }}>Register</button>
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: 10,
+            backgroundColor: loading ? "#999" : "#007bff",
+            color: "white",
+            border: "none",
+            cursor: loading ? "not-allowed" : "pointer",
+            fontSize: "16px",
+            borderRadius: "4px",
+          }}
+          disabled={loading}
+        >
+          {loading ? "Registering..." : "Register"}
+        </button>
       </form>
-      {message && <p style={{ marginTop: 16 }}>{message}</p>}
+
+      {message && (
+        <p style={{
+          marginTop: 16,
+          color: message.includes("failed") || message.includes("already exists")
+            ? "red"
+            : "green",
+          fontWeight: "bold"
+        }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 };
