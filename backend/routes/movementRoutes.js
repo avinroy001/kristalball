@@ -1,25 +1,51 @@
 const express = require("express");
-const Movement = require("../models/Movement");
-const Asset = require("../models/Asset");
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-  const { assetId, type, from, to, quantity } = req.body;
-  const movement = new Movement({ assetId, type, from, to, quantity });
-  await movement.save();
 
-  const asset = await Asset.findById(assetId);
-  if (type === "purchase") asset.quantity += quantity;
-  if (type === "transfer") asset.base = to;
-  if (type === "assignment") asset.assignedTo.push({ personnel: to, quantity });
-  await asset.save();
+const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 
-  res.status(201).json(movement);
-});
 
-router.get("/", async (req, res) => {
-  const movements = await Movement.find().populate("assetId");
-  res.json(movements);
-});
+const {
+  createPurchase,
+  createTransfer,
+  createAssignment,
+  recordExpenditure,
+  getAllMovements,
+} = require("../controllers/movementController");
+
+
+router.post(
+  "/purchase",
+  protect,
+  authorizeRoles("admin", "logistics"),
+  createPurchase
+);
+
+
+router.post(
+  "/transfer",
+  protect,
+  authorizeRoles("admin", "logistics"),
+  createTransfer
+);
+
+
+router.post(
+  "/assignment",
+  protect,
+  authorizeRoles("admin", "commander"),
+  createAssignment
+);
+
+
+router.post(
+  "/expenditure",
+  protect,
+  authorizeRoles("admin", "commander"),
+  recordExpenditure
+);
+
+
+router.get("/", protect, getAllMovements);
 
 module.exports = router;

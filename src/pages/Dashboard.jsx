@@ -1,43 +1,29 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
-  const [assets, setAssets] = useState([]);
-  const [movements, setMovements] = useState([]);
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("https://kristalball.onrender.com/api/assets", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setAssets(res.data));
-
-    axios
-      .get("https://kristalball.onrender.com/api/movements", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setMovements(res.data));
-  }, []);
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h2>Assets</h2>
-      {assets.map((asset) => (
-        <div key={asset._id}>
-          <strong>{asset.type}:</strong> {asset.quantity} at {asset.base}
-        </div>
-      ))}
+    <div style={{ padding: "20px" }}>
+      <h1>Welcome, {user.username || "User"}!</h1>
+      <h2>Dashboard</h2>
 
-      <h2>Movements</h2>
-      {movements.map((m, i) => (
-        <div key={i}>
-          {m.type} of {m.quantity} for {m.assetId.type} from {m.from} to {m.to} on {new Date(m.date).toLocaleDateString()}
-        </div>
-      ))}
+      <p>Select a module below to continue:</p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "15px", maxWidth: 300 }}>
+        <button onClick={() => handleNavigation("/dashboard")}>Dashboard</button>
+        <button onClick={() => handleNavigation("/purchases")}>Purchases</button>
+        <button onClick={() => handleNavigation("/transfers")}>Transfers</button>
+        <button onClick={() => handleNavigation("/assignments-expenditures")}>Assignments & Expenditures</button>
+      </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

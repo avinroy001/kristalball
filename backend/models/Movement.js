@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const movementSchema = new mongoose.Schema({
   assetId: { type: mongoose.Schema.Types.ObjectId, ref: "Asset" },
-  type: { type: String, enum: ["purchase", "transfer", "assignment"] },
+  type: {
+  type: String,
+  enum: ["purchase", "transfer_in", "transfer_out", "assignment", "expenditure"]
+},
   from: String,
   to: String,
   quantity: Number,

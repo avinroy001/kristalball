@@ -1,17 +1,25 @@
 const express = require("express");
-const Asset = require("../models/Asset");
 const router = express.Router();
-
-router.post("/", async (req, res) => {
-  const asset = new Asset(req.body);
-  await asset.save();
-  res.status(201).json(asset);
-});
+const Asset = require("../models/Asset");
 
 router.get("/", async (req, res) => {
-  const filters = req.query;
-  const assets = await Asset.find(filters);
-  res.json(assets);
+  try {
+    const { base, type, page = 1, limit = 10 } = req.query;
+    const filters = {};
+
+    if (base) filters.base = base;
+    if (type) filters.type = type;
+
+    const skip = (page - 1) * limit;
+
+    const assets = await Asset.find(filters)
+      .skip(skip)
+      .limit(Number(limit));
+
+    res.json(assets);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 module.exports = router;
