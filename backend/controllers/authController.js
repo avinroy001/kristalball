@@ -16,13 +16,13 @@ exports.registerUser = async (req, res) => {
       return res.status(409).json({ message: "Username already taken" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
-      username,
-      password: hashedPassword,
-      role,
-    });
+  username,
+  password,
+  role,
+});
 
     await user.save();
 
