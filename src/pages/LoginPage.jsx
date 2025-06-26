@@ -9,10 +9,13 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const { data } = await axios.post("https://kristalball.onrender.com/api/auth/login", {
-        username,
-        password,
-      });
+      const { data } = await axios.post(
+        "https://kristalball.onrender.com/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
       localStorage.setItem("token", data.token);
       navigate("/dashboard");
     } catch (err) {
@@ -23,14 +26,21 @@ function LoginPage() {
   return (
     <div>
       <h1>Login</h1>
-      <input value={username} onChange={(e) => setUsername(e.target.value)} />
       <input
+        placeholder="Username"
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        placeholder="Password"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+
       <button onClick={handleLogin}>Login</button>
-       <button onClick={() => navigate("/register")}>Register Now</button>
+      <button onClick={() => navigate("/register")}>Register Now</button>
     </div>
   );
 }

@@ -10,8 +10,6 @@ const assignmentsRoutes = require("./assignmentsRoutes");
 const expendituresRoutes = require("./expendituresRoutes");
 const dashboardRoutes = require("./dashboardRoutes");
 
-router.use("/dashboard", dashboardRoutes);
-
 router.use("/auth", authRoutes);
 router.use("/assets", assetRoutes);
 router.use("/movements", movementRoutes);
@@ -19,5 +17,7 @@ router.use("/purchases", purchasesRoutes);
 router.use("/transfers", transfersRoutes);
 router.use("/assignments", assignmentsRoutes);
 router.use("/expenditures", expendituresRoutes);
+router.use("/dashboard", dashboardRoutes);
+
 
 module.exports = router;
