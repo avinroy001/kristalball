@@ -8,20 +8,25 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      const { data } = await axios.post(
-        "https://kristalball.onrender.com/api/auth/login",
-        {
-          username,
-          password,
-        }
-      );
-      localStorage.setItem("token", data.token);
-      navigate("/dashboard");
-    } catch (err) {
-      alert("Login failed");
-    }
-  };
+  try {
+    const { data } = await axios.post("https://kristalball.onrender.com/api/auth/login", {
+      username,
+      password,
+    });
+
+    localStorage.setItem("token", data.token);
+
+    // Decode the JWT to get the role, or have your server return it directly
+    const payload = JSON.parse(atob(data.token.split('.')[1]));
+    localStorage.setItem("user", JSON.stringify({ role: payload.role }));
+
+    navigate("/dashboard");
+  } catch (err) {
+    console.error("Login error:", err.response?.data || err.message);
+    alert("Login failed");
+  }
+};
+
 
   return (
     <div>
